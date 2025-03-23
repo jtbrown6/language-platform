@@ -8,9 +8,16 @@ This is a React-based application that combines a text editor with language lear
 ## Features
 
 - Text editor with Define, Conjugate, and Pronounce options
-- Language selection (Spanish, French, Portuguese)
 - Assistance for improving language skills
 - Dark mode UI with gradient aesthetics
+
+## Future Enhancements
+1. Add Password Authentication
+2. Modify the `nginx.conf` to point to backend as well
+3. Modify python backend code to nodejs and combine application together
+4. Add more Languages
+5. Update TTS API using new OpenAI API released March 2025
+6. Save words to host volume and export as csv for google sheets
 
 ## Getting Started
 
