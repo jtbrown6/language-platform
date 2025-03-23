@@ -34,9 +34,9 @@ docker compose up -d
 
 # Using Dockerfile Local
 touch .env
-docker build -t fluentback .
-docker run -d --name fluentback -p 5000:5000 fluentback
-localhost:5000
+docker build -t language-platform/backend .
+docker run -d --name lang-backend -p 5001:5000 --restart always language-platform/backend:v1 
+localhost:5001
 ```
 
 
