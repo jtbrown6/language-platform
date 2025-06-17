@@ -12,6 +12,26 @@ This is a React-based application that combines a text editor with language lear
 - Dark mode UI with gradient aesthetics
 - Password protection to safeguard API usage
 
+## Using EC2 with CloudFlare Tunnels
+
+In order to get this to work properly there is a CORS issue that needs to be handled. Currently the BackendAPI will only accept traffic from the machine its running on. So you have to create a tunnel for `api.komebacklabs.com` and point to the `ElasticIP:5000` then ensure that the below is configured correctly.
+
+```bash
+# Security Groups and CloudFlare
+Open 5000 and 8080 from Anywhere
+Create subdomain for spanish and api.komebacklabs.com for the front and backends
+# Backend API
+touch .env
+docker run -d --name lang-backend -p 5000:5000 --restart always language-platform/backend:latest
+
+# Previous Frontend
+docker build --build-arg REACT_APP_API_BASE_URL=http://3.227.197.24:5000 -t language-platform/frontend .
+
+# With CloudFlare
+docker build --build-arg REACT_APP_API_BASE_URL=https://api.komebacklabs.com -t language-platform/frontend .
+docker run -d --name lang-frontend -p 8080:80 --restart always language-platform/frontend:latest
+```
+
 ## Password Protection
 
 The application now includes a password protection feature to prevent unauthorized access to the API functionality. This helps protect your OpenAI API token from being used by unauthorized users.
