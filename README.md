@@ -10,9 +10,40 @@ This is a React-based application that combines a text editor with language lear
 - Text editor with Define, Conjugate, and Pronounce options
 - Assistance for improving language skills
 - Dark mode UI with gradient aesthetics
+- Password protection to safeguard API usage
+
+## Password Protection
+
+The application now includes a password protection feature to prevent unauthorized access to the API functionality. This helps protect your OpenAI API token from being used by unauthorized users.
+
+### How it works:
+
+1. When a user first accesses the application, they are presented with a password modal
+2. The user must enter the correct password to access the application's features
+3. Once authenticated, the session remains active until the browser is closed
+4. All API calls are protected and require authentication
+
+### Customizing the password:
+
+The default password is set to `spanish123`. You can change this by modifying the `correctPassword` variable in the `src/context/AuthContext.js` file:
+
+```javascript
+// Login function - validates password and sets auth state
+const login = (password) => {
+  // Hardcoded password - in a real app, this would be more secure
+  const correctPassword = 'spanish123'; // Change this to your preferred password
+  
+  if (password === correctPassword) {
+    sessionStorage.setItem('isAuthenticated', 'true');
+    setIsAuthenticated(true);
+    return true;
+  }
+  return false;
+};
+```
 
 ## Future Enhancements
-1. Add Password Authentication
+1. ~~Add Password Authentication~~ ✅ Implemented
 2. Modify the `nginx.conf` to point to backend as well
 3. Modify python backend code to nodejs and combine application together
 4. Add more Languages
@@ -49,10 +80,13 @@ This is a React-based application that combines a text editor with language lear
 
 ## Usage
 
-- Type or paste text in the editor.
-- Select a word or phrase and use the Define, Conjugate, or Pronounce buttons to get more information.
-- Use the language dropdown to switch between Spanish, French, and Portuguese.
-- Click "Get Assistance" to receive suggestions for improving your text.
+1. When you first access the application, you'll be prompted to enter a password
+2. Enter the password (default is `spanish123`) to gain access to the application
+3. Type or paste text in the editor
+4. Select a word or phrase and use the Define, Conjugate, or Pronounce buttons to get more information
+5. Click "Get Assistance" to receive suggestions for improving your text
+
+Note: The authentication status is stored in your browser's session storage, so you won't need to re-enter the password until you close your browser.
 
 ## Customization
 
@@ -135,7 +169,31 @@ Run the Docker Container:
 
 Run the Docker container, mapping port 80 in the container to port 3000 on your host.
 `docker run -d -p 3000:80 fluent-front`
+
 Set Environment Variables:
 
 Ensure that the REACT_APP_API_BASE_URL environment variable is set to `http://192.168.1.250:5000` when building the Docker image or running the container.
-By following these steps, you can build and run your React app in a Docker container, serving it on 0.0.0.0:3000 and proxying API requests to the FastAPI endpoint at 192.168.1.250:5000.
+
+## Deploying to EC2
+
+To deploy the application to your EC2 instance:
+
+1. Build the application locally:
+   ```
+   npm run build
+   ```
+
+2. Transfer the build folder to your EC2 instance:
+   ```
+   scp -r build/ user@your-ec2-instance:/path/to/destination
+   ```
+
+3. Use the Dockerfile to build and run the container on your EC2 instance:
+   ```
+   docker build -t fluent-front .
+   docker run -d -p 80:80 fluent-front
+   ```
+
+4. Access your application at your EC2 instance's public IP or domain name.
+
+The password protection will ensure that only authorized users can access the API functionality, protecting your OpenAI API token from unauthorized usage.

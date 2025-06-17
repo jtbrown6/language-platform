@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Box, 
   Grid, 
   GridItem,
-  Heading
+  Heading,
+  useToast
 } from '@chakra-ui/react';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import PasswordModal from './components/PasswordModal';
 import Editor from './components/Editor';
 import Chat from './components/Chat';
 import OutputPane from './components/OutputPane';
@@ -14,15 +17,46 @@ import './App.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000';
 
-function App() {
+// Main App component wrapped with authentication
+function AppContent() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const toast = useToast();
   const [definitionOutput, setDefinitionOutput] = useState('');
   const [conjugationOutput, setConjugationOutput] = useState('');
   const [assistanceOutput, setAssistanceOutput] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
   const [language] = useState('spanish'); // Fixed to Spanish only
 
+  // Show authentication toast when user logs in
+  useEffect(() => {
+    if (isAuthenticated) {
+      toast({
+        title: "Authentication successful",
+        description: "You now have access to all features",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+    }
+  }, [isAuthenticated, toast]);
+
   const handleHighlight = async (text, type) => {
     console.log(`Handling ${type} request for:`, text);
+    
+    // Check authentication before making API call
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please enter the password to use this feature",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+      return;
+    }
+    
     try {
       let endpoint;
       let body;
@@ -81,6 +115,19 @@ function App() {
   };
 
   const handleGetAssistance = async (text) => {
+    // Check authentication before making API call
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please enter the password to use this feature",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_BASE_URL}/api/assist`, {
         method: 'POST',
@@ -97,6 +144,19 @@ function App() {
   };
 
   const handleChat = async (query) => {
+    // Check authentication before making API call
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please enter the password to use this feature",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_BASE_URL}/api/chatbot`, {
         method: 'POST',
@@ -115,6 +175,19 @@ function App() {
   };
 
   const handleResetConversation = async () => {
+    // Check authentication before making API call
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please enter the password to use this feature",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+      return;
+    }
+    
     try {
       await fetch(`${API_BASE_URL}/api/reset_conversation`, {
         method: 'POST',
@@ -129,6 +202,19 @@ function App() {
   };
 
   const handlePronounce = async (text) => {
+    // Check authentication before making API call
+    if (!isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "Please enter the password to use this feature",
+        status: "warning",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
+      return;
+    }
+    
     try {
       const response = await fetch(`${API_BASE_URL}/api/pronounce`, {
         method: 'POST',
@@ -171,6 +257,23 @@ function App() {
       console.error('Error fetching pronunciation:', error);
     }
   };
+
+  // Show loading state or password modal if not authenticated
+  if (isLoading) {
+    return (
+      <div className="App">
+        <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+          <Box p={5} textAlign="center">
+            <Heading size="md">Loading...</Heading>
+          </Box>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <PasswordModal />;
+  }
 
   return (
     <div className="App">
@@ -253,6 +356,15 @@ function App() {
         </Grid>
       </div>
     </div>
+  );
+}
+
+// Wrapper component that provides authentication context
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 
