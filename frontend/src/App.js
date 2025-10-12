@@ -115,6 +115,8 @@ function AppContent() {
   };
 
   const handleGetAssistance = async (text) => {
+    console.log('handleGetAssistance called with text:', text);
+    
     // Check authentication before making API call
     if (!isAuthenticated) {
       toast({
@@ -129,6 +131,7 @@ function AppContent() {
     }
     
     try {
+      console.log('Making API request to:', `${API_BASE_URL}/api/assist`);
       const response = await fetch(`${API_BASE_URL}/api/assist`, {
         method: 'POST',
         headers: {
@@ -136,10 +139,39 @@ function AppContent() {
         },
         body: JSON.stringify({ text, language }),
       });
+      
+      console.log('API response status:', response.status);
+      
+      if (!response.ok) {
+        throw new Error(`API returned status ${response.status}`);
+      }
+      
       const data = await response.json();
+      console.log('API response data:', data);
+      console.log('data.result:', data.result);
+      console.log('Setting assistance output...');
+      
       setAssistanceOutput(data.result);
+      
+      console.log('Assistance output set successfully');
+      
+      toast({
+        title: "Assistance received",
+        status: "success",
+        duration: 2000,
+        isClosable: true,
+        position: "top-right"
+      });
     } catch (error) {
       console.error('Error fetching assistance:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to get assistance",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+        position: "top-right"
+      });
     }
   };
 

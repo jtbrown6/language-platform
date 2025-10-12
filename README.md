@@ -12,6 +12,12 @@ This is a React-based application that combines a text editor with language lear
 - Dark mode UI with gradient aesthetics
 - Password protection to safeguard API usage
 
+## Local Development Process - Updated October 2025
+The process is simple, you just need to pull the code down, and modify a few files.
+- create a `.env` file in the root directory
+- modify the file `frontend/nginx.conf` and uncomment out the proxy_pass for the correct server and should point to the internal docker address of `backend:5000`
+- run the command `docker-compose -f docker-compose-local.yaml up --build`
+
 ## Using EC2 with CloudFlare Tunnels
 
 In order to get this to work properly there is a CORS issue that needs to be handled. Currently the BackendAPI will only accept traffic from the machine its running on. So you have to create a tunnel for `api.komebacklabs.com` and point to the `ElasticIP:5000` then ensure that the below is configured correctly.

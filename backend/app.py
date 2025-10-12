@@ -11,6 +11,8 @@ from io import BytesIO
 import base64
 from pathlib import Path
 import requests
+import sqlite3
+from datetime import datetime
 
 load_dotenv()
 
@@ -19,6 +21,35 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
+
+# Database configuration
+DB_PATH = 'language_platform.db'
+
+def init_db():
+    """Initialize the SQLite database with notes table"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    
+    # Create notes table if it doesn't exist
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS notes (
+            id INTEGER PRIMARY KEY,
+            content TEXT NOT NULL,
+            last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Insert initial empty note if table is empty
+    cursor.execute('SELECT COUNT(*) FROM notes')
+    if cursor.fetchone()[0] == 0:
+        cursor.execute('INSERT INTO notes (id, content) VALUES (1, "")')
+    
+    conn.commit()
+    conn.close()
+    logger.info("Database initialized successfully")
+
+# Initialize database on startup
+init_db()
 
 # Set your OpenAI API key securely
 openai.api_key = os.getenv('OPENAI_API_KEY')  # Ensure you have set this environment variable
@@ -38,22 +69,65 @@ MAX_HISTORY = 3
 
 
 # This handles the "Assist Me" Button
+# @app.route('/api/assist', methods=['POST'])
+# def assist():
+#     data = request.json
+#     text = data.get('text', '')
+#     messages = [
+#         {"role": "system", "content": "You are a helpful assistant proficient in correcting Spanish text for English Speakers Learning Spanish."},
+#         {"role": "user", "content": f"""Correct the following Spanish text. Your recommendations should be tailored for English speakers
+#          so they can read and understand the recommendations in their native language while allow them to also reading the corrections in Spanish.
+#          Consider any cultural or situational nuances and explain any mistakes:\n\n{text}"""}
+#         #{"role": "user", "content": f"Correct the following Spanish text, consider any cultural or situational nuances and explain any mistakes:\n\n{text}"}
+#     ]
+#     response = openai.ChatCompletion.create(
+#         model='gpt-5-mini-2025-08-07',
+#         messages=messages,
+#         max_tokens=800,
+#         temperature=0.7,
+#     )
+#     return jsonify({'result': response.choices[0].message['content'].strip()})
+
+
+# This handles the "Assist Me" Button — Option B (mention once) + Bilingual guidance
 @app.route('/api/assist', methods=['POST'])
 def assist():
     data = request.json
     text = data.get('text', '')
+
+    system = """You are a concise Spanish writing coach for English-speaking learners.
+
+Rules:
+1) Corrections: Provide ONE corrected version of the user's text IN SPANISH.
+2) Recommendations/Explanations: Write all guidance IN ENGLISH and keep it brief and actionable for an English speaker.
+3) ACCENT POLICY: Ignore accent/diacritic-only issues (á, é, í, ó, ú, ü, ñ, ¿, ¡) unless missing/adding them changes meaning (e.g., si/sí, tu/tú, el/él, mas/más, solo/sólo when disambiguation matters, interrogatives/exclamatives: qué, cómo, cuándo, dónde, por qué).
+4) If an accent changes meaning, silently fix it in the corrected text. Add a single note line: "Applied accent fixes where they changed meaning."
+5) Output format (STRICT and terse):
+   - Corrected (ES): <corrected Spanish>
+   - Non-Accent Errors (EN): <0–5 bullets naming ONLY non-accent issues; no long explanations; include the minimal Spanish fix with →>
+   - Recommendations (EN): <1–3 short bullets tailored to an English speaker; include cultural/situational nuance if relevant; keep it brief>
+   - Notes (EN): <omit if none>
+6) Be token-efficient. No apologies, no meta commentary, do not repeat the user’s original text.
+"""
+
+    # Keep your bilingual requirement explicit in the user message for extra reinforcement.
+    user = f"""Correct the following Spanish text. Your recommendations should be tailored for English speakers
+so they can read and understand the recommendations in their native language (English) while also reading the corrected text in Spanish.
+Consider any cultural or situational nuances and explain any mistakes briefly in English, following the rules above.
+
+Text:
+{text}"""
+
     messages = [
-        {"role": "system", "content": "You are a helpful assistant proficient in correcting Spanish text for English Speakers Learning Spanish."},
-        {"role": "user", "content": f"""Correct the following Spanish text. Your recommendations should be tailored for English speakers
-         so they can read and understand the recommendations in their native language while allow them to also reading the corrections in Spanish.
-         Consider any cultural or situational nuances and explain any mistakes:\n\n{text}"""}
-        #{"role": "user", "content": f"Correct the following Spanish text, consider any cultural or situational nuances and explain any mistakes:\n\n{text}"}
+        {"role": "system", "content": system},
+        {"role": "user", "content": user}
     ]
+
     response = openai.ChatCompletion.create(
-        model='gpt-4o-mini',
+        model="gpt-4o-mini-2024-07-18",
         messages=messages,
-        max_tokens=400,
-        temperature=0.7,
+        max_tokens=3000,
+        temperature=0.2,
     )
     return jsonify({'result': response.choices[0].message['content'].strip()})
 
@@ -73,10 +147,10 @@ def conjugate():
     
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-4o-mini',
+            model='gpt-4o-mini-2024-07-18',
             messages=messages,
-            max_tokens=700,
-            temperature=0.7,
+            max_tokens=1000,
+            temperature=0.4,
         )
         logger.debug(f"Received response from OpenAI: {response}")
         
@@ -113,10 +187,10 @@ def define():
         {"role": "user", "content": f"Define the Spanish or English word '{word}' in English or Spanish and provide a sentence using the word. If the word has both a definition for its form as a noun or adjective provide both."}
     ]
     response = openai.ChatCompletion.create(
-        model='gpt-4o-mini',
+        model='gpt-4o-mini-2024-07-18',
         messages=messages,
-        max_tokens=100,
-        temperature=0.7,
+        max_tokens=500,
+        temperature=0.4,
     )
     return jsonify({'result': response.choices[0].message['content'].strip()})
 
@@ -160,9 +234,9 @@ def question():
 
     try:
         response = openai.ChatCompletion.create(
-        model='gpt-4o-mini',
+        model='gpt-4o-mini-2024-07-18',
         messages=messages_to_send,
-        max_tokens=120,
+        max_tokens=700,
         temperature=0.7,
     )
         assistant_message = response.choices[0].message['content'].strip()
@@ -187,6 +261,56 @@ def reset_conversation():
     return jsonify({'result': 'Conversation history reset successfully'})
 
 
+# Notes endpoints for persistent storage
+@app.route('/api/notes', methods=['GET'])
+def get_notes():
+    """Retrieve the current notes from the database"""
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('SELECT content, last_updated FROM notes WHERE id = 1')
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            return jsonify({
+                'content': result[0],
+                'last_updated': result[1]
+            })
+        else:
+            return jsonify({'content': '', 'last_updated': None})
+    except Exception as e:
+        logger.error(f"Error retrieving notes: {str(e)}")
+        return jsonify({'error': 'Failed to retrieve notes', 'details': str(e)}), 500
+
+
+@app.route('/api/notes', methods=['POST'])
+def save_notes():
+    """Save or update notes in the database"""
+    try:
+        data = request.json
+        content = data.get('content', '')
+        
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        
+        # Update the notes content and timestamp
+        cursor.execute('''
+            UPDATE notes 
+            SET content = ?, last_updated = ? 
+            WHERE id = 1
+        ''', (content, datetime.now().isoformat()))
+        
+        conn.commit()
+        conn.close()
+        
+        logger.debug(f"Notes saved successfully. Length: {len(content)} characters")
+        return jsonify({'result': 'Notes saved successfully', 'length': len(content)})
+    except Exception as e:
+        logger.error(f"Error saving notes: {str(e)}")
+        return jsonify({'error': 'Failed to save notes', 'details': str(e)}), 500
+
+
 @app.route('/api/pronounce', methods=['POST'])
 def pronounce():
     # Get the word from the request that's highlighted
@@ -204,9 +328,9 @@ def pronounce():
             {"role": "user", "content": f"Translate the word '{word}' to Spanish. If it's already Spanish, return it unchanged, but ONLY provide the translated word, do not mention that the word is in spanish or not."}
         ]
         translation_response = openai.ChatCompletion.create(
-            model="gpt-4o-mini", 
+            model="gpt-4o-mini-2024-07-18", 
             messages=translation_prompt,
-            max_tokens=500, 
+            max_tokens=500,
             temperature=0.3,
         )
         translated_word = translation_response.choices[0].message['content'].strip()
@@ -267,56 +391,5 @@ def pronounce():
         return jsonify({'error': 'Failed to generate pronunciation', 'details': str(e)}), 500
 
 
-# @app.route('/api/pronounce/original', methods=['POST'])
-# def pronounce():
-#     # Get the word from the request
-#     data = request.json
-#     word = data.get('word', '').strip()
-
-#     if not word:
-#         logger.debug("Received empty word for pronunciation.")
-#         return jsonify({'error': 'Missing or empty word in request'}), 400
-
-#     try:
-#         # Step 1: Translate the word to Spanish if necessary
-#         translation_prompt = [
-#             {"role": "system", "content": "You are a translator proficient in Spanish."},
-#             {"role": "user", "content": f"Translate the word '{word}' to Spanish. If it's already Spanish, return it unchanged."}
-#         ]
-#         translation_response = openai.ChatCompletion.create(
-#             model="gpt-4o-mini",
-#             messages=translation_prompt,
-#             max_tokens=200, 
-#             temperature=0.7
-#         )
-#         translated_word = translation_response.choices[0].message['content'].strip()
-
-#         logger.debug(f"Translated word: {translated_word}")
-
-#         # Step 2: Generate the Spanish pronunciation using OpenAI TTS
-#         tts_response = openai.Audio.speech.create(
-#             model="tts-1",  # Choose the appropriate model (e.g., `tts-1` or `tts-1-hd`)
-#             voice="nova",  # Use a Spanish-friendly voice
-#             input=translated_word,
-#         )
-
-#         # Get the MP3 audio content
-#         audio_content = tts_response["audio"]
-
-#         logger.debug("Generated audio content successfully.")
-
-#         # Return the original word, translation, and audio as a response
-#         return jsonify({
-#             "original_word": word,
-#             "translated_word": translated_word,
-#             "audio": audio_content
-#         })
-#     except Exception as e:
-#         logger.error(f"Error generating text-to-speech: {str(e)}")
-#         return jsonify({'error': 'Failed to generate pronunciation', 'details': str(e)}), 500
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
-
-

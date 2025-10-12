@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spanish Learning Platform v2.0 - Immersive Flow</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Smart Learning Dashboard (Top Bar) -->
+    <header class="dashboard-header">
+        <div class="dashboard-container">
+            <div class="dashboard-left">
+                <div class="stat-item streak">
+                    <span class="emoji">🔥</span>
+                    <span class="stat-value">15-Day Streak</span>
+                </div>
+                <div class="stat-item level">
+                    <span class="emoji">⭐</span>
+                    <span class="stat-value">Level A2</span>
+                </div>
+                <div class="stat-item xp">
+                    <span class="emoji">📊</span>
+                    <div class="xp-container">
+                        <span class="stat-value">350/500 XP</span>
+                        <div class="xp-bar">
+                            <div class="xp-progress" style="width: 70%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-item time">
+                    <span class="stat-label">Today:</span>
+                    <span class="stat-value">45 min</span>
+                </div>
+            </div>
+            <div class="dashboard-right">
+                <button class="icon-btn theme-toggle" title="Toggle Theme">🌙</button>
+                <button class="icon-btn settings" title="Settings">⚙️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Daily Highlights Banner -->
+    <div class="highlights-banner">
+        <div class="highlight-item">
+            <span class="emoji">💬</span>
+            <div class="highlight-content">
+                <strong>Word of the Day:</strong> "Madrugada"
+                <span class="subtitle">Early morning hours (noun)</span>
+            </div>
+        </div>
+        <div class="highlight-item challenge">
+            <span class="emoji">🎯</span>
+            <div class="highlight-content">
+                <strong>Daily Challenge:</strong> Conjugate 5 -ar verbs
+                <span class="subtitle">⭐ Earn 25 XP!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Left Panel: Smart Editor -->
+        <section class="editor-panel glass-panel">
+            <div class="panel-header">
+                <h2>Smart Editor</h2>
+                <div class="editor-tools">
+                    <button class="tool-btn" title="Voice Input">🎤</button>
+                    <select class="quick-phrases">
+                        <option>📋 Quick Phrases</option>
+                        <option>¡Hola! ¿Qué tal?</option>
+                        <option>Muchas gracias</option>
+                        <option>¿Cómo estás?</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="editor-area">
+                <textarea class="text-editor" placeholder="Start writing in Spanish here...">Hoy es un día maravilloso. Me levanto temprano para estudiar español. Es importante practicar todos los días.</textarea>
+                <div class="editor-highlights">
+                    <!-- Inline highlights would appear here -->
+                </div>
+            </div>
+
+            <div class="editor-stats">
+                <div class="stat">Grammar: <span class="success">98% ✅</span></div>
+                <div class="stat">Readability: <span class="good">Good</span></div>
+                <div class="stat">Word Count: <span>87</span></div>
+            </div>
+
+            <div class="editor-actions">
+                <button class="action-btn primary">
+                    <span>🎤</span>
+                    <span>Pronounce</span>
+                </button>
+                <button class="action-btn primary">
+                    <span>📖</span>
+                    <span>Define</span>
+                </button>
+                <button class="action-btn primary">
+                    <span>✏️</span>
+                    <span>Conjugate</span>
+                </button>
+                <button class="action-btn primary">
+                    <span>🔊</span>
+                    <span>Translate</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Right Panel: Dynamic Learning Panel -->
+        <section class="learning-panel glass-panel">
+            <div class="tab-navigation">
+                <button class="tab-btn active" data-tab="vocab">
+                    <span>📚</span>
+                    <span>Vocabulary</span>
+                </button>
+                <button class="tab-btn" data-tab="grammar">
+                    <span>📖</span>
+                    <span>Grammar</span>
+                </button>
+                <button class="tab-btn" data-tab="chat">
+                    <span>💬</span>
+                    <span>Chat</span>
+                </button>
+                <button class="tab-btn" data-tab="stats">
+                    <span>📊</span>
+                    <span>Progress</span>
+                </button>
+            </div>
+
+            <!-- Vocabulary Tab Content -->
+            <div class="tab-content active" id="vocab">
+                <div class="flashcard">
+                    <div class="flashcard-header">
+                        <h3>Madrugada</h3>
+                        <div class="word-meta">
+                            <span class="frequency">⭐⭐⭐ Common</span>
+                            <span class="level badge-b1">B1</span>
+                        </div>
+                    </div>
+                    <div class="flashcard-body">
+                        <p class="translation">Early morning (before dawn)</p>
+                        <button class="audio-btn">🎤 Play Audio</button>
+                        
+                        <div class="examples">
+                            <h4>Examples:</h4>
+                            <ul>
+                                <li>Me levanto de madrugada todos los días.</li>
+                                <li>La madrugada es mi hora favorita.</li>
+                                <li>Trabajó hasta la madrugada.</li>
+                            </ul>
+                        </div>
+
+                        <div class="related-words">
+                            <h4>Related Words:</h4>
+                            <div class="word-tags">
+                                <span class="word-tag">mañana</span>
+                                <span class="word-tag">amanecer</span>
+                                <span class="word-tag">alba</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flashcard-actions">
+                        <button class="btn-secondary">← Previous</button>
+                        <button class="btn-primary">Add to Flashcards</button>
+                        <button class="btn-secondary">Next →</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar Tab Content -->
+            <div class="tab-content" id="grammar">
+                <div class="grammar-exercise">
+                    <h3>Conjugation Practice: HABLAR</h3>
+                    <p class="instruction">Fill in the blanks with the correct form:</p>
+                    
+                    <div class="exercise-item">
+                        <label>Yo <input type="text" placeholder="______" class="exercise-input"> español (present)</label>
+                    </div>
+                    <div class="exercise-item">
+                        <label>Ellos <input type="text" placeholder="______" class="exercise-input"> ayer (preterite)</label>
+                    </div>
+                    <div class="exercise-item">
+                        <label>Nosotros <input type="text" placeholder="______" class="exercise-input"> mañana (future)</label>
+                    </div>
+
+                    <div class="exercise-actions">
+                        <button class="btn-primary">Check Answers</button>
+                        <button class="btn-secondary">New Exercise</button>
+                    </div>
+
+                    <div class="accuracy-display">
+                        Accuracy: <span class="accuracy-value">85%</span> ⭐⭐⭐⭐
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Tab Content -->
+            <div class="tab-content" id="chat">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div class="scenario-selector">
+                            <label>Scenario:</label>
+                            <select class="scenario-select">
+                                <option>🍽️ At a Restaurant</option>
+                                <option>✈️ Travel & Tourism</option>
+                                <option>💼 Business Meeting</option>
+                                <option>🏥 At the Doctor</option>
+                            </select>
+                        </div>
+                        <div class="ai-personality">
+                            <label>AI:</label>
+                            <select class="personality-select">
+                                <option>👋 Casual Friend</option>
+                                <option>👨‍🏫 Formal Tutor</option>
+                                <option>🌍 Native Speaker</option>
+                                <option>💼 Business Professional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages">
+                        <div class="message ai-message">
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <p>¡Hola! ¿Qué tal? ¿Listo para practicar?</p>
+                            </div>
+                        </div>
+                        <div class="message user-message">
+                            <div class="message-content">
+                                <p>¡Hola! Sí, estoy listo.</p>
+                            </div>
+                            <div class="message-avatar">👤</div>
+                        </div>
+                    </div>
+
+                    <div class="chat-tip">
+                        💡 Tip: Use "¿Qué recomiendas?" to ask for recommendations
+                    </div>
+
+                    <div class="chat-input-area">
+                        <input type="text" class="chat-input" placeholder="Type a message...">
+                        <button class="send-btn">Send</button>
+                        <button class="voice-btn">🎤</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Tab Content -->
+            <div class="tab-content" id="stats">
+                <div class="progress-stats">
+                    <h3>This Week:</h3>
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-label">New words learned</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">3.5h</div>
+                            <div class="stat-label">Study time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">85%</div>
+                            <div class="stat-label">Exercise accuracy</div>
+                        </div>
+                    </div>
+
+                    <div class="progress-chart">
+                        <h4>Words Learned Over Time</h4>
+                        <div class="chart-placeholder">
+                            📈 [Chart visualization would go here]
+                        </div>
+                    </div>
+
+                    <div class="strengths-weaknesses">
+                        <div class="strength-section">
+                            <h4>Strong Areas 💪</h4>
+                            <ul>
+                                <li>Present tense conjugation</li>
+                                <li>Food vocabulary</li>
+                            </ul>
+                        </div>
+                        <div class="weakness-section">
+                            <h4>Needs Practice 📈</h4>
+                            <ul>
+                                <li>Subjunctive mood</li>
+                                <li>Past tense distinction</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Tools Panel -->
+    <footer class="tools-panel">
+        <!-- Pronunciation Tool -->
+        <div class="tool-section glass-panel">
+            <div class="tool-header">
+                <span class="tool-icon">🎤</span>
+                <h3>Pronounce</h3>
+            </div>
+            <div class="tool-content">
+                <p>Compare your voice to native speaker</p>
+                <div class="waveform-placeholder">
+                    [Waveform visualization]
+                </div>
+                <button class="btn-primary">Record</button>
+            </div>
+        </div>
+
+        <!-- Definition Tool -->
+        <div class="tool-section glass-panel">
+            <div class="tool-header">
+                <span class="tool-icon">📖</span>
+                <h3>Define</h3>
+            </div>
+            <div class="tool-content">
+                <p>Selected word with examples</p>
+                <div class="definition-preview">
+                    Select a word to see definition
+                </div>
+            </div>
+        </div>
+
+        <!-- Conjugation Tool -->
+        <div class="tool-section glass-panel">
+            <div class="tool-header">
+                <span class="tool-icon">✏️</span>
+                <h3>Conjugate</h3>
+            </div>
+            <div class="tool-content">
+                <p>Practice interactive exercises</p>
+                <button class="btn-secondary">Start Drill</button>
+            </div>
+        </div>
+
+        <!-- Smart Notes -->
+        <div class="tool-section glass-panel notes-section">
+            <div class="tool-header">
+                <span class="tool-icon">📝</span>
+                <h3>Smart Notes</h3>
+            </div>
+            <div class="tool-content">
+                <div class="notes-controls">
+                    <input type="text" class="notes-search" placeholder="🔍 Search notes...">
+                </div>
+                <div class="notes-tags">
+                    <span class="tag">#verbs</span>
+                    <span class="tag">#grammar</span>
+                </div>
+                <div class="notes-list">
+                    <div class="note-item">
+                        • Quick note about subjunctive
+                    </div>
+                    <div class="note-item">
+                        • 🎤 [Voice note]
+                    </div>
+                </div>
+                <div class="notes-actions">
+                    <button class="btn-sm">+ New</button>
+                    <button class="btn-sm">Export ▼</button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Achievement Toast (Example) -->
+    <div class="achievement-toast">
+        <div class="toast-content">
+            <span class="toast-icon">🏆</span>
+            <div class="toast-text">
+                <strong>Achievement Unlocked!</strong>
+                <p>15-Day Streak Champion</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
