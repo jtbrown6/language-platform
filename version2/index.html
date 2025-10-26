@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Diario Interactivo - Spanish Learning Journal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="app-title">El Diario Interactivo</h1>
+            <button id="aiTutorBtn" class="ai-tutor-btn">
+                💬 AI Tutor
+            </button>
+        </div>
+    </header>
+
+    <!-- AI Tutor Chat Overlay -->
+    <div id="aiTutorOverlay" class="ai-tutor-overlay hidden">
+        <div class="ai-tutor-content">
+            <div class="ai-tutor-header">
+                <h3>AI Tutor</h3>
+                <button id="closeTutorBtn" class="close-btn">×</button>
+            </div>
+            <div id="chatHistory" class="chat-history"></div>
+            <div class="chat-input-container">
+                <input type="text" id="chatInput" placeholder="Pregunta sobre gramática, vocabulario, o cultura..." class="chat-input">
+                <button id="sendChatBtn" class="send-btn">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="tab-navigation">
+        <button id="journalTab" class="tab-btn active" data-tab="journal">Journal</button>
+        <button id="archiveTab" class="tab-btn" data-tab="archive">Archive</button>
+        <button id="practiceTab" class="tab-btn" data-tab="practice">Practice</button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Journal Tab -->
+        <div id="journalView" class="tab-content active">
+            <div class="journal-container">
+                <div class="writing-section">
+                    <div class="writing-header">
+                        <span class="date-display" id="currentDate"></span>
+                        <span class="word-count" id="wordCount">0 words</span>
+                    </div>
+                    <textarea id="journalTextarea" class="journal-textarea" placeholder="Escribe tu entrada del diario aquí... / Write your journal entry here..."></textarea>
+                    
+                    <!-- Floating action buttons for text selection -->
+                    <div id="floatingButtons" class="floating-buttons hidden">
+                        <button id="definitionBtn" class="floating-btn">Definition</button>
+                        <button id="conjugateBtn" class="floating-btn">Conjugate</button>
+                    </div>
+                    
+                    <div class="journal-actions">
+                        <button id="submitReviewBtn" class="btn btn--primary">Submit for Review</button>
+                    </div>
+                </div>
+                
+                <div class="learning-sidebar">
+                    <!-- Definition Panel -->
+                    <div id="definitionPanel" class="panel hidden">
+                        <div class="panel-header">
+                            <h3>Definición en Español</h3>
+                            <button class="close-panel-btn" data-panel="definition">×</button>
+                        </div>
+                        <div id="definitionContent" class="panel-content"></div>
+                    </div>
+                    
+                    <!-- Conjugation Panel -->
+                    <div id="conjugationPanel" class="panel hidden">
+                        <div class="panel-header">
+                            <h3>Conjugación del Verbo</h3>
+                            <button class="close-panel-btn" data-panel="conjugation">×</button>
+                        </div>
+                        <div id="conjugationContent" class="panel-content"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Review Panel -->
+            <div id="reviewPanel" class="review-panel hidden">
+                <div class="review-header">
+                    <h3>AI Review</h3>
+                    <button id="closeReviewBtn" class="close-btn">×</button>
+                </div>
+                <div class="review-content">
+                    <div id="reviewResults"></div>
+                    <button id="saveEntryBtn" class="btn btn--primary">Save Entry</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Archive Tab -->
+        <div id="archiveView" class="tab-content">
+            <div class="archive-container">
+                <div class="entries-list">
+                    <h2>Past Entries</h2>
+                    <div id="entriesList" class="entries-container"></div>
+                </div>
+                <div class="entry-viewer">
+                    <div id="entryDisplay" class="entry-display">
+                        <p class="empty-state">Select an entry to view it here</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Word List Section -->
+            <div class="word-list-section">
+                <h3>My Word/Verb List (<span id="wordListCount">0</span> words)</h3>
+                <div id="wordListDisplay" class="word-list-display">
+                    <p class="empty-state">No words saved yet. Highlight words in your entries to add them to your vocabulary list.</p>
+                </div>
+                <button id="clearWordListBtn" class="btn btn--outline btn--sm">Clear All</button>
+            </div>
+        </div>
+
+        <!-- Practice Tab -->
+        <div id="practiceView" class="tab-content">
+            <div class="practice-container">
+                <div class="practice-instructions">
+                    <h2>Practice Sentence Generator</h2>
+                    <p>Generate practice sentences using words from your vocabulary list.</p>
+                    <p>Words in your list: <strong id="practiceWordCount">0</strong></p>
+                    <button id="generatePracticeBtn" class="btn btn--primary btn--lg" disabled>Generate Practice</button>
+                </div>
+                
+                <div id="practiceDisplay" class="practice-display hidden">
+                    <div class="practice-header">
+                        <h3>Practice Sentences</h3>
+                        <button id="generateNewSetBtn" class="btn btn--secondary">Generate New Set</button>
+                    </div>
+                    <div id="practiceContent" class="practice-content"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Success Messages -->
+    <div id="successMessage" class="success-message hidden"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
