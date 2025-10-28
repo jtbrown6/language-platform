@@ -5,6 +5,7 @@
 ### Requirements - Unstructured
 
 **Must Haves**
+- Idea for Design: https://www.youtube.com/watch?v=P86uvPvFShM | Chibi style or something close to this
 - I want the ability to read my Learncraft Notes in a separate tab; Ideally the ability to search but that would be a plus not mandatory
 - I want to listen to dreaming spanish but have the transcript available and ability to click on words to get definition and possibly add to the weekly study session
   - Autonomously download the audio file (ideal)
